@@ -1,11 +1,59 @@
 const blackjackDeck = getDeck();
 
+const getDeck = () => {
+  const suits = ['hearts', 'spades', 'clubs', 'diamonds']
+  const deck = []
+
+  for (let i = 0; i < suits.length; i++) {
+    //create an array of 13 objects for each suit
+    for (j = 1; j <= 13; j++) {
+
+      let displayVal = ""
+
+      switch (j) {
+        case (1):
+          displayVal = "Ace"
+          break;
+        case (11):
+          displayVal = "Jack"
+          break;
+        case (12):
+          displayVal = "Queen"
+          break;
+        case (13):
+          displayVal = "King"
+          break;
+        default:
+          displayVal = j.toString()
+          break;
+      }
+
+      //for each loop, push a card object to the deck.
+      const card = {
+        val: j,
+        displayVal: displayVal,
+        suit: suits[i]
+      }
+
+      if (displayVal === "Ace") {
+        card.val = 11;
+      }
+
+      deck.push(card);
+    }
+  }
+  return deck;
+}
 /**
  * Represents a card player (including dealer).
  * @constructor
  * @param {string} name - The name of the player
  */
-class CardPlayer {}; //TODO
+class CardPlayer {
+  constructor(name){
+    this.name = name;
+  }
+}; //TODO
 
 // CREATE TWO NEW CardPlayers
 const dealer; // TODO
