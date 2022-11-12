@@ -1,5 +1,7 @@
 const blackjackDeck = getDeck();
 
+// copied from the in-class exercise
+
 const getDeck = () => {
   const suits = ['hearts', 'spades', 'clubs', 'diamonds']
   const deck = []
@@ -9,7 +11,6 @@ const getDeck = () => {
     for (j = 1; j <= 13; j++) {
 
       let displayVal = ""
-
       switch (j) {
         case (1):
           displayVal = "Ace"
@@ -24,7 +25,7 @@ const getDeck = () => {
           displayVal = "King"
           break;
         default:
-          displayVal = j.toString()
+          displayVal = j
           break;
       }
 
@@ -52,12 +53,20 @@ const getDeck = () => {
 class CardPlayer {
   constructor(name){
     this.name = name;
+    this.hand = [];
+    this.cardElementId ='';
+    drawCard = () => {
+      let drawedCard = blackjackDeck[Math.floor(Math.random() * 52)];
+      this.hand.push(drawedCard);
+      console.log(drawedCard);
+      document.getElementById(this.cardElementId).innerText = this.hand.map((card) => `${card.suit}-${card.displayVal}`).join(', ');
+    };
   }
 }; //TODO
 
 // CREATE TWO NEW CardPlayers
-const dealer; // TODO
-const player; // TODO
+const dealer = new CardPlayer('dealer');
+const player = new CardPlayer('player');
 
 /**
  * Calculates the score of a Blackjack hand
@@ -67,9 +76,32 @@ const player; // TODO
  * @returns {boolean} blackJackScore.isSoft
  */
 const calcPoints = (hand) => {
-  // CREATE FUNCTION HERE
+  let total = 0;
+  let aceCount = 0;
+  let aceCountAs_01 = 0;
+  let aceCountAs_11 = 0;
+
+  for (i = 0; i < hand.length; i++) {
+    if (hand[i].val == 11) {  //handle Ace
+      aceCount++;
+      if ((total + 11) > 21) { //Ace count as 1
+        total += 1;
+        aceCountAs_01++;
+      } else {                 //Ace Count as 11
+        total += 11;
+        aceCountAs_11++;
+      }
+    } else {                //handle non Ace
+      total += hand[i].val; 
+    }
+  }
+
+  let isSoft = aceCount > 0 && aceCountAs_11 > 0;
+
+  return {isSoft,total};
 
 }
+
 
 /**
  * Determines whether the dealer should draw another card.
@@ -77,10 +109,13 @@ const calcPoints = (hand) => {
  * @param {Array} dealerHand Array of card objects with val, displayVal, suit properties
  * @returns {boolean} whether dealer should draw another card
  */
-const dealerShouldDraw = (dealerHand) => {
-  // CREATE FUNCTION HERE
 
+const dealerShouldDraw = (dealerHand) => {
+  let points = calcPoints(dealerHand);
+  return (points.total < 17 || (points.total === 17 && points.isSoft));
 }
+
+
 
 /**
  * Determines the winner if both player and dealer stand
@@ -88,9 +123,19 @@ const dealerShouldDraw = (dealerHand) => {
  * @param {number} dealerScore 
  * @returns {string} Shows the player's score, the dealer's score, and who wins
  */
-const determineWinner = (playerScore, dealerScore) => {
-  // CREATE FUNCTION HERE
 
+const determineWinner = (playerScore, dealerScore) => {
+  let result = '';
+  if (playerScore > dealerScore) {
+    result = 'Player Wins';
+  }
+  else if (playerScore < dealerScore) {
+    result = 'Dealer Wins';
+  }
+  else {
+    result = 'tie';
+  }
+  return `Player Score: ${playerScore}, Dealer Score: ${dealerScore}, ${result}`;
 }
 
 /**
@@ -145,4 +190,4 @@ const startGame = function() {
 
   return determineWinner(playerScore, dealerScore);
 }
-// console.log(startGame());
+ console.log(startGame());
