@@ -3,7 +3,7 @@
  * @returns {Array} deck - a deck of cards
  */
 const getDeck = () => {
-  const suits = ['hearts', 'spades', 'clubs', 'diamonds']
+  const suits = ['Hearts', 'Spades', 'Clubs', 'Diamonds']
   const deck = []
 
   for (let i = 0; i < suits.length; i++) {
@@ -32,7 +32,7 @@ const getDeck = () => {
 
       //for each loop, push a card object to the deck.
       const card = {
-        val: j,
+        val: j > 10 ? 10 : j,
         displayVal: displayVal,
         suit: suits[i]
       }
